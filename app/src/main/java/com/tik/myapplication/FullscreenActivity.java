@@ -2,6 +2,7 @@ package com.tik.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -10,6 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -97,7 +101,6 @@ public class FullscreenActivity extends AppCompatActivity {
         mContentView = (WebView) findViewById(R.id.fullscreen_content);
         Intent intent = getIntent();
 
-
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +113,8 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
-        mContentView.loadUrl(intent.getStringExtra("videoUrl"));
+        mContentView.setWebViewClient(new WebViewClient());
+        mContentView.loadUrl("http:" + intent.getStringExtra("videoUrl"));
         WebSettings webSettings = mContentView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 

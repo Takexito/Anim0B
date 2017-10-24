@@ -9,19 +9,14 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
 
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
     <WebView
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="#33b5e5"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+        android:visibility="visible" />
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

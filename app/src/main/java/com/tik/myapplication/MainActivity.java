@@ -43,8 +43,6 @@ public class MainActivity extends Activity {
         mt.execute();
 
 
-
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int posY, long id) {

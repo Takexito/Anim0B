@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.tik.myapplication.Parse.ParseSite;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FullNewsActivity extends AppCompatActivity {
 
     String link, title;
@@ -26,6 +29,7 @@ public class FullNewsActivity extends AppCompatActivity {
 
     ArrayAdapter<String> adapter;
     String[] data = {"one", "two", "three", "four", "five"};
+    List<String> datas = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,9 @@ public class FullNewsActivity extends AppCompatActivity {
     }
 
     public void onStartButtonClick(View view){
-        startActivity(videoIntent);
+        String id = datas.get(spinner.getSelectedItemPosition());
+        new JsoupTask().execute(id);
+
     }
 
     private void getWidget(){
@@ -57,23 +63,35 @@ public class FullNewsActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
     }
 
+    private class JsoupTask extends AsyncTask<String, Void, Void> {
+        String link;
+        protected Void doInBackground(String... ids) {
+
+            link = ParseSite.getVideoLink(ids[0]);
+            return null;
+        }
+
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            videoIntent.putExtra("videoUrl", link);
+            startActivity(videoIntent);
+        }
+    }
+
     class MyTask extends AsyncTask<Void, Void, Void> {
-
-
 
         @Override
         protected Void doInBackground(Void... params) {
-            link = ParseSite.HOST + ParseSite.getTitlesLinks(intent.getLongExtra(MainActivity.NEWS_ID, (long) 0));
-            link = ParseSite.getVideoLink(link);
-            title = link + " " + intent.getStringExtra(MainActivity.NEWS_TITLE);
+            link = ParseSite.getTitlesLinks(intent.getLongExtra(MainActivity.NEWS_ID, (long) 0));
+            datas = ParseSite.getSeriaLinks(link);
+            //title = link + " " + intent.getStringExtra(MainActivity.NEWS_TITLE);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            videoIntent.putExtra("videoUrl", link);
-
 
         }
     }
