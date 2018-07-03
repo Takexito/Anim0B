@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
+    android:visibility="visible"
     tools:context="com.tik.myapplication.FullscreenActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -11,11 +12,14 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+
     <WebView
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible" />
+        android:visibility="visible">
+
+    </WebView>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -1,0 +1,34 @@
+{
+  "id": 1,
+  "title": "DxD",
+  "img": "http://images.sgcafe.net/2018/03/DZHL8JxVMAEA9AH.jpg",
+  "description": "the best anime of the year!",
+  "maxEp": 12,
+  "currEp": 2,
+  "episodes": [
+    {
+      "animeId": 1,
+      "num": 1,
+      "voicer": "Gachigasm",
+      "url": "//smotret-anime.ru/translations/embed/1782237"
+    },
+    {
+      "animeId": 1,
+      "num": 1,
+      "voicer": "anidub",
+      "url": "//video.sibnet.ru/shell.php?videoid=3284343"
+    },
+    {
+      "animeId": 1,
+      "num": 2,
+      "voicer": "Gachigasm",
+      "url": "//smotret-anime.ru/translations/embed/1795626"
+    },
+    {
+      "animeId": 1,
+      "num": 2,
+      "voicer": "anidub",
+      "url": "//video.sibnet.ru/shell.php?videoid=3309689"
+    }
+  ]
+}

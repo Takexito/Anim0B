@@ -1,62 +1,45 @@
 package com.tik.myapplication;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.tik.myapplication.Parse.ParseSite;
 
-import org.jsoup.select.Elements;
+//import com.tik.myapplication.Parse.ParseSite;
 
-import java.util.ArrayList;
+public class MainActivity extends AppCompatActivity {
 
-
-public class MainActivity extends Activity {
-
-    private ListView listView;
-    private ProgressBar progressBar;
-    private ArrayList<String> titles = new ArrayList<>();
-    ArrayAdapter<String> adapter;
-    protected static final String NEWS_TITLE = "com.tik.anim1r.NEWS_TITLE";
-    protected static final String NEWS_ID = "com.tik.anim1r.NEWS_ID";
-    private boolean isUpdate = false;
+    private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getView();
+        createRecyclerView();
 
-        listView = findViewById(R.id.listView1);
-        progressBar = findViewById(R.id.progressBar);
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, titles);
-        listView.setAdapter(adapter);
-        MyTask mt = new MyTask();
-        mt.execute();
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int posY, long id) {
-                openFullNews(titles.get((int) id), id);
-            }
-        });
+        // запускаем новый поток для парсинга данных
+        new ParseTask().execute();
     }
 
-    private void openFullNews(String title, long id){
-        Intent intent = new Intent(this, FullNewsActivity.class);
-        intent.putExtra(NEWS_TITLE, title);
-        intent.putExtra(NEWS_ID, id);
-        //intent.putExtra("videoUrl", "http://fs.myvi.ru/video/1688140.mp4?uid=&puid=&ref=&d=4392&rnd=662526491&sig=31e7af42f2a4e3dbfb26b0a60c947cb3");
-        startActivity(intent);
+    private void getView() {
+        mRecyclerView = findViewById(R.id.animeView);
+        mProgressBar = findViewById(R.id.progressBar);
+    }
+
+    private void createRecyclerView() {
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -81,26 +64,58 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    class MyTask extends AsyncTask<Void, Void, Void> {
-
-        Elements anime_titles;//Тут храним значение заголовка сайта
-        String title;
+    // поток для парсинга
+    @SuppressLint("StaticFieldLeak")
+    class ParseTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
-            anime_titles = ParseSite.getAnimeTitles();
-            title = ParseSite.getPageTitle();
+            //ParseSite.setAnimeTitles();
+            AnimeSingletone.setAnimes("{\n" +
+                    "  \"id\":1,\n" +
+                    "  \"title\":\"DxD\",\n" +
+                    "  \"img\":\"http://images.sgcafe.net/2018/03/DZHL8JxVMAEA9AH.jpg\",\n" +
+                    "  \"description\":\"the best anime of the year!\",\n" +
+                    "  \"maxEp\":12,\n" +
+                    "  \"currEp\":2,\n" +
+                    "  \"episodes\":[\n" +
+                    "    {\n" +
+                    "      \"animeId\":1,\n" +
+                    "      \"num\":1,\n" +
+                    "      \"voicer\":\"Gachigasm\",\n" +
+                    "      \"url\":\"//smotret-anime.ru/translations/embed/1782237\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"animeId\":1,\n" +
+                    "      \"num\":1,\n" +
+                    "      \"voicer\":\"anidub\",\n" +
+                    "      \"url\":\"//video.sibnet.ru/shell.php?videoid=3284343\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"animeId\":1,\n" +
+                    "      \"num\":2,\n" +
+                    "      \"voicer\":\"Gachigasm\",\n" +
+                    "      \"url\":\"//smotret-anime.ru/translations/embed/1795626\"\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"animeId\":1,\n" +
+                    "      \"num\":2,\n" +
+                    "      \"voicer\":\"anidub\",\n" +
+                    "      \"url\":\"//video.sibnet.ru/shell.php?videoid=3309689\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}\n");
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            titles = (ArrayList<String>) anime_titles.eachText();
-            adapter.addAll(titles);
-            listView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
+
+            mRecyclerView.setAdapter(new AnimeAdapter());
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
+
 }

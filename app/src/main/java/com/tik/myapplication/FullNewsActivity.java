@@ -1,97 +1,104 @@
 package com.tik.myapplication;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tik.myapplication.Parse.ParseSite;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
+
+//import com.tik.myapplication.Parse.ParseSite;
 
 public class FullNewsActivity extends AppCompatActivity {
 
-    String link, title;
-    Intent intent;
-    Intent videoIntent;
+    private Anime mAnime;
 
-    ImageView titleImage;
-    Spinner spinner;
-    TextView descriptionText;
-    Button startButton;
-
-    ArrayAdapter<String> adapter;
-    String[] data = {"one", "two", "three", "four", "five"};
-    List<String> datas = new ArrayList<>();
+    private ImageView mTitleImage;
+    private Spinner mSpinner;
+    private TextView mDescriptionText;
+    private Button mStartButton;
+    private ProgressBar mProgressBar;
+    private ConstraintLayout mMainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_news);
-        intent = getIntent();
-        MyTask myTask = new MyTask();
-        myTask.execute();
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, data);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         getWidget();
-        videoIntent = new Intent(this, FullscreenActivity.class);
-
-        spinner.setPrompt("Series");
-
+        mAnime = getAnime(getIntent().getLongExtra(ActivityManager.NEWS_ID, 0));
+        // new StartVideoTask().execute(mAnime);
     }
 
-    public void onStartButtonClick(View view){
-        String id = datas.get(spinner.getSelectedItemPosition());
-        new JsoupTask().execute(id);
-
+    private Anime getAnime(long id) {
+        return AnimeSingletone.animes.get((int) id);
     }
 
-    private void getWidget(){
-        titleImage = (ImageView) findViewById(R.id.titleImage);
-        spinner = (Spinner) findViewById(R.id.spinner);
-        descriptionText = (TextView) findViewById(R.id.descripText);
-        startButton = (Button) findViewById(R.id.startButton);
-
-        spinner.setAdapter(adapter);
+    protected void onStart() {
+        super.onStart();
+        parceData();
+        createSpinner();
+        mMainLayout.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    private class JsoupTask extends AsyncTask<String, Void, Void> {
-        String link;
-        protected Void doInBackground(String... ids) {
+    private void parceData() {
+        Glide
+                .with(mTitleImage)
+                .load(mAnime.getImg())
+                .into(mTitleImage);
+    }
 
-            link = ParseSite.getVideoLink(ids[0]);
+    private void createSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getData());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setPrompt("Series");
+    }
+
+    private String[] getData() {
+        ArrayList<String> data = new ArrayList<>();
+        int l = mAnime.getEpisodesSize();
+        for (int i = 1; i <= l; i++) {
+            data.add("Серия " + mAnime.getEpisode(i - 1).getNum() + " " + mAnime.getEpisode(i - 1).getVoicer());
+        }
+        return data.toArray(new String[0]);
+    }
+
+    public void onStartButtonClick(View view) {
+        ActivityManager.openFullScreen(this, mAnime.getEpisode(mSpinner.getSelectedItemPosition()).getUrl());
+    }
+
+    private void getWidget() {
+        mTitleImage = findViewById(R.id.titleImage);
+        mSpinner = findViewById(R.id.spinner);
+        mDescriptionText = findViewById(R.id.descripText);
+        mStartButton = findViewById(R.id.startButton);
+        mProgressBar = findViewById(R.id.progressBar);
+        mMainLayout = findViewById(R.id.mainLot);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class StartVideoTask extends AsyncTask<Anime, Void, Void> {
+        protected Void doInBackground(Anime... anime) {
+            //ParseSite.getVideoLink(anime[(int) mSpinner.getSelectedItemId()]);
+            //AnimeSingletone.animes.get((int) mSpinner.getSelectedItemId());
             return null;
         }
 
-
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            videoIntent.putExtra("videoUrl", link);
-            startActivity(videoIntent);
-        }
-    }
-
-    class MyTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            link = ParseSite.getTitlesLinks(intent.getLongExtra(MainActivity.NEWS_ID, (long) 0));
-            datas = ParseSite.getSeriaLinks(link);
-            //title = link + " " + intent.getStringExtra(MainActivity.NEWS_TITLE);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
+            mMainLayout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.INVISIBLE);
 
         }
     }

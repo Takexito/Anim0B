@@ -1,41 +1,23 @@
 package com.tik.myapplication;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.MediaController;
-import android.widget.VideoView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class FullscreenActivity extends AppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
     private static final boolean AUTO_HIDE = true;
-
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private WebView mContentView;
@@ -98,10 +80,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = (WebView) findViewById(R.id.fullscreen_content);
-        Intent intent = getIntent();
-
-        // Set up the user interaction to manually show or hide the system UI.
+        mContentView = findViewById(R.id.fullscreen_content);
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,14 +88,10 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
         mContentView.setWebViewClient(new WebViewClient());
-        mContentView.loadUrl("http:" + intent.getStringExtra("videoUrl"));
-        WebSettings webSettings = mContentView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+        mContentView.loadUrl("http:" + getIntent().getStringExtra(ActivityManager.VIDEO_URL));
+        mContentView.getSettings().setJavaScriptEnabled(true);
 
         mContentView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -125,7 +100,6 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     @Override
@@ -180,4 +154,12 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mContentView.destroy();
+        finish();
+    }
+
 }
