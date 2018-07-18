@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#0099cc"
     android:visibility="visible"
-    tools:context="com.tik.myapplication.FullscreenActivity">
+    tools:context="com.tik.anim0b.activity.FullscreenActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,

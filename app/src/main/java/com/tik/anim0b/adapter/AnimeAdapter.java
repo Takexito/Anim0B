@@ -1,4 +1,4 @@
-package com.tik.myapplication;
+package com.tik.anim0b.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,16 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.tik.anim0b.R;
+import com.tik.anim0b.manager.ActivityManager;
+import com.tik.anim0b.manager.AnimeManager;
 
 public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> {
-    private String[] mUrls;
-    private String[] mTitles;
-
-    public AnimeAdapter() {
-        this.mUrls = AnimeSingletone.getImageUrls();
-        this.mTitles = AnimeSingletone.getTitles().toArray(new String[]{});
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // each data item is just a string in this case
@@ -48,22 +43,19 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull AnimeAdapter.ViewHolder holder, final int position) {
-        Glide
-                .with(holder.mImageView)
-                .load(mUrls[position])
-                .into(holder.mImageView);
-        holder.mTextView.setText(mTitles[position]);
+        AnimeManager.setAnimeImage(holder.mImageView, AnimeManager.getImgUrl(position + 1));
+        holder.mTextView.setText(AnimeManager.getTitle(position + 1));
         //holder.mImageView.setImageResource(R.drawable.dw_a);
     }
 
     @Override
     public long getItemId(int i) {
-        return AnimeSingletone.animes.get(i).hashCode();
+        return AnimeManager.getAnime(i).hashCode();
     }
 
     @Override
     public int getItemCount() {
-        return AnimeSingletone.animes.size();
+        return AnimeManager.getAnimesSize();
     }
 
 //        @Override
@@ -71,7 +63,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 //            if(view == null){
 //                view = getLayoutInflater().inflate(R.layout.list_item, viewGroup, false);
 //            }
-//            String url = AnimeSingletone.animes.get(i).img;
+//            String url = AnimeManager.animes.get(i).img;
 //
 //            Glide
 //                    .with(view)

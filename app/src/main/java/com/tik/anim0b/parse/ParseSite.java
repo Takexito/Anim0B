@@ -1,8 +1,8 @@
 //package com.tik.myapplication.Parse;
 //
-//import com.tik.myapplication.Anime;
-//import com.tik.myapplication.AnimeSingletone;
-//import com.tik.myapplication.Episode;
+//import com.tik.myapplication.pojo.Anime;
+//import com.tik.myapplication.AnimeManager;
+//import com.tik.myapplication.pojo.Episode;
 //
 //import org.jsoup.Connection;
 //import org.jsoup.Jsoup;
@@ -103,7 +103,7 @@
 //            string = anime_element.text();
 //            getTitles(anime_titles, string);
 //            for (int i = 0; i + 1 <= anime_titles.size(); i++) {
-//                AnimeSingletone.animes.add(new Anime(i + 1, anime_titles.get(i), 2, 1));
+//                AnimeManager.animes.add(new Anime(i + 1, anime_titles.get(i), 2, 1));
 //            }
 //        }
 //    }

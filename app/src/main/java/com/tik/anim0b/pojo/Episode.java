@@ -1,6 +1,7 @@
-package com.tik.myapplication;
+package com.tik.anim0b.pojo;
 
 public class Episode {
+    private int animeId;
     private Anime anime;
     private String voicer;
     private String url;
@@ -47,9 +48,14 @@ public class Episode {
     }
 
     public Episode(int animeId, int num, String voicer, String url) {
-        this.anime = AnimeSingletone.animeMap.get(animeId);
+        this.animeId = animeId;
+//      temp.addEpisode(this);
         this.voicer = voicer;
         this.url = url;
         this.num = num;
+    }
+
+    public int getAnimeId() {
+        return animeId;
     }
 }

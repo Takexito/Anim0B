@@ -1,4 +1,4 @@
-package com.tik.myapplication;
+package com.tik.anim0b.activity;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -11,10 +11,32 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-
-//import com.tik.myapplication.Parse.ParseSite;
+import com.tik.anim0b.adapter.AnimeAdapter;
+import com.tik.anim0b.manager.AnimeManager;
+import com.tik.anim0b.R;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final static String JSON = "{\n" +
+            "  \"animes\":[ \n" +
+            "    {\n" +
+            "      \"id\":1,\n" +
+            "      \"title\":\"Fullmetal Alchemist: Brotherhood\",\n" +
+            "      \"img\":\"http://images.sgcafe.net/2018/03/DZHL8JxVMAEA9AH.jpg\",\n" +
+            "      \"description\":\"the best anime of the year!\",\n" +
+            "      \"maxEp\":0,\n" +
+            "      \"currEp\":0\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"id\":2,\n" +
+            "      \"title\":\"Kimi no Na wa.\",\n" +
+            "      \"img\":\"http://images.sgcafe.net/2018/03/DZHL8JxVMAEA9AH.jpg\",\n" +
+            "      \"description\":\"the best anime of the year!\",\n" +
+            "      \"maxEp\":0,\n" +
+            "      \"currEp\":0\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
@@ -23,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         getView();
         createRecyclerView();
 
-        // запускаем новый поток для парсинга данных
         new ParseTask().execute();
     }
 
@@ -64,54 +86,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // поток для парсинга
     @SuppressLint("StaticFieldLeak")
     class ParseTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
-            //ParseSite.setAnimeTitles();
-            AnimeSingletone.setAnimes("{\n" +
-                    "  \"id\":1,\n" +
-                    "  \"title\":\"DxD\",\n" +
-                    "  \"img\":\"http://images.sgcafe.net/2018/03/DZHL8JxVMAEA9AH.jpg\",\n" +
-                    "  \"description\":\"the best anime of the year!\",\n" +
-                    "  \"maxEp\":12,\n" +
-                    "  \"currEp\":2,\n" +
-                    "  \"episodes\":[\n" +
-                    "    {\n" +
-                    "      \"animeId\":1,\n" +
-                    "      \"num\":1,\n" +
-                    "      \"voicer\":\"Gachigasm\",\n" +
-                    "      \"url\":\"//smotret-anime.ru/translations/embed/1782237\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"animeId\":1,\n" +
-                    "      \"num\":1,\n" +
-                    "      \"voicer\":\"anidub\",\n" +
-                    "      \"url\":\"//video.sibnet.ru/shell.php?videoid=3284343\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"animeId\":1,\n" +
-                    "      \"num\":2,\n" +
-                    "      \"voicer\":\"Gachigasm\",\n" +
-                    "      \"url\":\"//smotret-anime.ru/translations/embed/1795626\"\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"animeId\":1,\n" +
-                    "      \"num\":2,\n" +
-                    "      \"voicer\":\"anidub\",\n" +
-                    "      \"url\":\"//video.sibnet.ru/shell.php?videoid=3309689\"\n" +
-                    "    }\n" +
-                    "  ]\n" +
-                    "}\n");
+            AnimeManager.setAnime(JSON);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
             mRecyclerView.setAdapter(new AnimeAdapter());
             mRecyclerView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.INVISIBLE);

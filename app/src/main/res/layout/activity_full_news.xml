@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    tools:context=".FullNewsActivity">
+    tools:context=".activity.FullNewsActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/loadLot"

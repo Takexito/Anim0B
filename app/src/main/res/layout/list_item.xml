@@ -22,13 +22,13 @@
             android:id="@+id/list_img_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
             android:cropToPadding="false"
             android:gravity="center_vertical"
             android:minHeight="?android:attr/listPreferredItemHeightSmall"
             android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
             android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+            android:scaleType="matrix"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:visibility="visible" />
 

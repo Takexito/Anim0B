@@ -1,4 +1,4 @@
-package com.tik.myapplication;
+package com.tik.anim0b.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.tik.anim0b.manager.ActivityManager;
+import com.tik.anim0b.R;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -159,7 +162,6 @@ public class FullscreenActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mContentView.destroy();
-        finish();
     }
 
 }

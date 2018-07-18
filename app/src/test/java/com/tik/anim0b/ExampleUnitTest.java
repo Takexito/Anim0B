@@ -1,4 +1,4 @@
-package com.tik.myapplication;
+package com.tik.anim0b;
 
 import org.junit.Test;
 
