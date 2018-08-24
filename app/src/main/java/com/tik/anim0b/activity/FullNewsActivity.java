@@ -12,20 +12,20 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tik.anim0b.manager.ActivityManager;
-import com.tik.anim0b.pojo.Anime;
-import com.tik.anim0b.manager.AnimeManager;
 import com.tik.anim0b.R;
+import com.tik.anim0b.manager.ActivityManager;
+import com.tik.anim0b.manager.AnimeManager;
+import com.tik.anim0b.parse.ParseSite;
 
 import java.util.ArrayList;
 
 public class FullNewsActivity extends AppCompatActivity {
 
-    private final static String JSON =
-            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"AniDUB (Ancord \\u0026 n_o_i_r)\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/1543213\"} \n" +
-            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"CGinfo\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/1613696\"} \n" +
-            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"CGinfo / 30 голосая озвучка (это не шутка)\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/868809\"} \n" +
-            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"MCA\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/873475\"}";
+//    private final static String JSON =
+//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"AniDUB (Ancord \\u0026 n_o_i_r)\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/1543213\"} \n" +
+//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"CGinfo\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/1613696\"} \n" +
+//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"CGinfo / 30 голосая озвучка (это не шутка)\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/868809\"} \n" +
+//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"MCA\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/873475\"}";
 
     private int mAnimeId;
 
@@ -42,7 +42,7 @@ public class FullNewsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_full_news);
         getWidget();
         mAnimeId = (int) getIntent().getLongExtra(ActivityManager.NEWS_ID, 0);
-        new StartVideoTask().execute(AnimeManager.getAnime(mAnimeId));
+        new StartVideoTask().execute(mAnimeId);
         mDescriptionText.setText(AnimeManager.getDescription(mAnimeId));
 
     }
@@ -61,9 +61,11 @@ public class FullNewsActivity extends AppCompatActivity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class StartVideoTask extends AsyncTask<Anime, Void, Void> {
-        protected Void doInBackground(Anime... anime) {
-            AnimeManager.setEpisodes(JSON);
+    private class StartVideoTask extends AsyncTask<Integer, Void, Void> {
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            String json = ParseSite.getEpisodesJson(AnimeManager.getAnime(integers[0]));
+            AnimeManager.setEpisodes(json);
             return null;
         }
 
@@ -85,10 +87,10 @@ public class FullNewsActivity extends AppCompatActivity {
 
     private String[] getSpinnerData() {
         ArrayList<String> data = new ArrayList<>();
-        int l = AnimeManager.getCurrEp(mAnimeId);
-        for (int i = 1; i <= l; i++) {
-            data.add(AnimeManager.getSpinerLabel(AnimeManager.getEpisode(mAnimeId, i - 1).getNum(),
-                    AnimeManager.getEpisode(mAnimeId, i - 1).getVoicer()));
+        int l = AnimeManager.getEpisodesSize(mAnimeId);
+        for (int i = 1; i < l; i++) {
+            data.add(AnimeManager.getSpinerLabel(AnimeManager.getEpisode(mAnimeId, i).getNum(),
+                    AnimeManager.getEpisode(mAnimeId, i).getVoicer()));
         }
         return data.toArray(new String[0]);
     }

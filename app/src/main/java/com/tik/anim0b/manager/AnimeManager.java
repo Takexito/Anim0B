@@ -3,11 +3,12 @@ package com.tik.anim0b.manager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.tik.anim0b.parse.ParceJson;
 import com.tik.anim0b.pojo.Anime;
 import com.tik.anim0b.pojo.Episode;
-import com.tik.anim0b.parse.ParceJson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AnimeManager {
 
@@ -49,6 +50,10 @@ public class AnimeManager {
         return animes.get(animeId - 1).getEpisode(episodeId);
     }
 
+    public static int getEpisodesSize(int animeId) {
+        return animes.get(animeId - 1).getEpisodes().size();
+    }
+
     public static ArrayList<Episode> getEpisodes(int animeId){
         return animes.get(animeId - 1).getEpisodes();
     }
@@ -71,10 +76,26 @@ public class AnimeManager {
     public static void setEpisodes(String json){
         ParceJson parceJson = new ParceJson(json);
         parceJson.nextJsonObject();
-        Episode episode = parceJson.mapEpisode();
-        Anime anime = AnimeManager.animes.get(episode.getAnimeId() - 1);
-        episode.setAnime(anime);
-        anime.addEpisode(episode);
+        List<Episode> episodes = parceJson.mapEpisode();
+        for (int i = 0; i < episodes.size(); i++) {
+            Episode episode = episodes.get(i);
+            Anime anime = AnimeManager.animes.get(episode.getIdd());
+            episode.setAnime(anime);
+            anime.addEpisode(episode);
+            anime.setMax_ep(i);
+        }
+    }
+
+    public static int getAnimeIndex(Anime anime) {
+        return AnimeManager.animes.indexOf(anime);
+    }
+
+    public static void setAnimesFromSite() {
+
+    }
+
+    public static void setEpisodesFromSite() {
+
     }
 
     public static void setAnimeImage(ImageView imageView, String url){
@@ -84,8 +105,9 @@ public class AnimeManager {
                 .into(imageView);
     }
 
+
     public static String getSpinerLabel(int episodeNum, String voicer){
-        return "Серия " + episodeNum + " " + voicer;
+        return "Серия " + (episodeNum - 1) + " " + voicer;
     }
 
     private static void clearAnime() {

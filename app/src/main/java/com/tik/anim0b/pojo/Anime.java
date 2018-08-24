@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Anime {
     private int id;
     private String title;
+
     private int max_ep;
     private int curr_ep;
     private String imgUrl;
@@ -24,6 +25,12 @@ public class Anime {
     public int getMax_ep() {
         return max_ep;
     }
+
+
+    public void setMax_ep(int max_ep) {
+        this.max_ep = max_ep;
+    }
+
 
     public int getCurr_ep() {
         return curr_ep;

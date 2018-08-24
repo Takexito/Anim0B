@@ -32,7 +32,7 @@ public class ParceJson {
     public List<Anime> mapAnime() {
         List<Anime> animes = new ArrayList<>();
         try {
-            JSONArray jsonArray = json.getJSONArray("animes");
+            JSONArray jsonArray = new JSONArray(jsonString);
             int id = 0;
             String title = "";
             String img = "";
@@ -42,9 +42,9 @@ public class ParceJson {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 id = jsonObject.getInt("id");
                 title = jsonObject.getString("title");
-                img = jsonObject.getString("img");
-                description = jsonObject.getString("description");
-                maxEp = jsonObject.getInt("maxEp");
+                img = jsonObject.getString("img");//"http://cdn.seasonvar.ru/oblojka/498.jpg"; //
+                description = "lol"; //jsonObject.getString("description");
+                maxEp = 20; //jsonObject.getInt("maxEp");
                 animes.add(new Anime(id, title, img, description, maxEp));
             }
             return animes;
@@ -54,16 +54,23 @@ public class ParceJson {
         return animes;
     }
 
-    public Episode mapEpisode(){
+    public List<Episode> mapEpisode() {
+        List<Episode> episodes = new ArrayList<>();
         try {
-            int animeId = json.getInt("animeId");
-            int num = json.getInt("num");
-            String voicer = json.getString("name");
-            String url = json.getString("url");
-            return new Episode(animeId, num, voicer, url);
+            JSONArray jsonArray = new JSONArray(jsonString);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                int animeId = jsonObject.getInt("animeId");
+                int num = jsonObject.getInt("num");
+                String voicer = jsonObject.getString("name");
+                String url = jsonObject.getString("url");
+                episodes.add(new Episode(jsonObject.getInt("idd"), animeId, num, voicer, url));
+            }
+            return episodes;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-            return new Episode(0, 0, "", "");
-        }
+        episodes.add(new Episode(0, 0, 0, "", ""));
+        return episodes;
+    }
 }
