@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             String json = ParseSite.getTitlesJson();
             AnimeManager.setAnime(json);
+            ParseSite.clearJson();
             return null;
         }
 

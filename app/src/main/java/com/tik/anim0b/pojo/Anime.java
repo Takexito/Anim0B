@@ -31,6 +31,9 @@ public class Anime {
         this.max_ep = max_ep;
     }
 
+    public void setCurr_ep(int curr_ep) {
+        this.curr_ep = curr_ep;
+    }
 
     public int getCurr_ep() {
         return curr_ep;

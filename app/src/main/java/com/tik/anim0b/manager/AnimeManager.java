@@ -12,14 +12,6 @@ import java.util.List;
 
 public class AnimeManager {
 
-    public static class SingletonHolder {
-        public static final AnimeManager HOLDER_INSTANCE = new AnimeManager();
-    }
-
-    public static AnimeManager getInstance() {
-        return SingletonHolder.HOLDER_INSTANCE;
-    }
-
     private static ArrayList<Anime> animes = new ArrayList<>();
 
     public static ArrayList<Anime> getAnimes(){
@@ -90,14 +82,6 @@ public class AnimeManager {
         return AnimeManager.animes.indexOf(anime);
     }
 
-    public static void setAnimesFromSite() {
-
-    }
-
-    public static void setEpisodesFromSite() {
-
-    }
-
     public static void setAnimeImage(ImageView imageView, String url){
         Glide
                 .with(imageView)
@@ -105,9 +89,15 @@ public class AnimeManager {
                 .into(imageView);
     }
 
-
     public static String getSpinerLabel(int episodeNum, String voicer){
-        return "Серия " + (episodeNum - 1) + " " + voicer;
+        return "Серия " + (episodeNum) + " " + getNameVoicer(voicer);
+    }
+
+    private static String getNameVoicer(String voicer) {
+        int i = voicer.indexOf("(");
+        if (i == -1)
+            return voicer;
+        else return voicer.substring(0, i - 1);
     }
 
     private static void clearAnime() {

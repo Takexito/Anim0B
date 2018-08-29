@@ -1,15 +1,16 @@
 package com.tik.anim0b.activity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tik.anim0b.R;
@@ -21,16 +22,11 @@ import java.util.ArrayList;
 
 public class FullNewsActivity extends AppCompatActivity {
 
-//    private final static String JSON =
-//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"AniDUB (Ancord \\u0026 n_o_i_r)\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/1543213\"} \n" +
-//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"CGinfo\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/1613696\"} \n" +
-//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"CGinfo / 30 голосая озвучка (это не шутка)\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/868809\"} \n" +
-//            "{\"id\":0,\"num\":1,\"animeId\":1,\"name\":\"MCA\",\"url\":\"https://play.shikimori.org/animes/5114-fullmetal-alchemist-brotherhood/video_online/1/873475\"}";
 
     private int mAnimeId;
+    private static String videoLink;
 
     private ImageView mTitleImage;
-    private Spinner mSpinner;
     private TextView mDescriptionText;
     //private Button mStartButton;
     private ProgressBar mProgressBar;
@@ -42,58 +38,132 @@ public class FullNewsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_full_news);
         getWidget();
         mAnimeId = (int) getIntent().getLongExtra(ActivityManager.NEWS_ID, 0);
-        new StartVideoTask().execute(mAnimeId);
         mDescriptionText.setText(AnimeManager.getDescription(mAnimeId));
+        new NewTask().execute(mAnimeId);
 
     }
 
     private void getWidget() {
         mTitleImage = findViewById(R.id.titleImage);
-        mSpinner = findViewById(R.id.spinner);
         mDescriptionText = findViewById(R.id.descripText);
         //mStartButton = findViewById(R.id.startButton);
         mProgressBar = findViewById(R.id.progressBar);
         mMainLayout = findViewById(R.id.mainLot);
     }
 
+    public void start() {
+        ActivityManager.openFullScreen(this, getVideoLink());
+    }
+
     public void onStartButtonClick(View view) {
-        ActivityManager.openFullScreen(this, AnimeManager.getEpisode(mAnimeId, mSpinner.getSelectedItemPosition()).getUrl());
+        //new ParseVideoTask().execute();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Выберите серию");
+        builder.setAdapter(new ArrayAdapter(this, android.R.layout.select_dialog_item, spData()), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                new StartVideoTask().execute(mAnimeId, i);
+            }
+        });
+
+        builder.create().show();
+
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class StartVideoTask extends AsyncTask<Integer, Void, Void> {
+    private class NewTask extends AsyncTask<Integer, Void, Void> {
+
         @Override
         protected Void doInBackground(Integer... integers) {
-            String json = ParseSite.getEpisodesJson(AnimeManager.getAnime(integers[0]));
-            AnimeManager.setEpisodes(json);
+            AnimeManager.getAnime(integers[0]).setCurr_ep(ParseSite.getEpNum(
+                    "https://play.shikimori.org/animes/"
+                            + AnimeManager.getAnime(integers[0]).getId()
+                            + '-'
+                            + AnimeManager.getAnime(integers[0]).getTitle()
+                    )
+            );
             return null;
+
         }
 
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            createSpinner();
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             AnimeManager.setAnimeImage(mTitleImage, AnimeManager.getImgUrl(mAnimeId));
             mMainLayout.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void createSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getSpinnerData());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
-        mSpinner.setPrompt("Series");
+    @SuppressLint("StaticFieldLeak")
+    private class ParseVideoTask extends AsyncTask<Integer, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            setVideoLink(ParseSite.getVideoUrl(AnimeManager.getEpisode(mAnimeId, integers[0]).getUrl()));
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            start();
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class StartVideoTask extends AsyncTask<Integer, Integer, Void> {
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            String json = ParseSite.getEpisodesJson(AnimeManager.getAnime(integers[0]), integers[1] + 1);//mSpinner.getSelectedItemPosition());
+            AnimeManager.setEpisodes(json);
+            ParseSite.clearJson();
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            AlertDialog.Builder builder = new AlertDialog.Builder(FullNewsActivity.this);
+            builder.setTitle("Выберите вариант");
+            builder.setAdapter(new ArrayAdapter(FullNewsActivity.this, android.R.layout.select_dialog_item, getSpinnerData()), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    new ParseVideoTask().execute(i);
+                }
+            });
+            builder.create().show();
+
+        }
     }
 
     private String[] getSpinnerData() {
         ArrayList<String> data = new ArrayList<>();
         int l = AnimeManager.getEpisodesSize(mAnimeId);
-        for (int i = 1; i < l; i++) {
-            data.add(AnimeManager.getSpinerLabel(AnimeManager.getEpisode(mAnimeId, i).getNum(),
-                    AnimeManager.getEpisode(mAnimeId, i).getVoicer()));
+        for (int i = 0; i < l; i++) {
+            data.add(AnimeManager.getSpinerLabel(
+                    AnimeManager.getEpisode(mAnimeId, i).getNum(),
+                    AnimeManager.getEpisode(mAnimeId, i).getVoicer()
+                    )
+            );
         }
         return data.toArray(new String[0]);
     }
 
+    private String[] spData() {
+        ArrayList<String> data = new ArrayList<>();
+        for (int i = 1; i <= AnimeManager.getAnime(mAnimeId).getCurr_ep(); i++) {
+            data.add("Серия " + String.valueOf(i));
+        }
+        return data.toArray(new String[0]);
+    }
+
+    private static void setVideoLink(String link) {
+        videoLink = link;
+    }
+
+    private static String getVideoLink() {
+        return videoLink;
+    }
 
 }

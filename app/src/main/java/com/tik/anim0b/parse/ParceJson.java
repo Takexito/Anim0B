@@ -44,7 +44,7 @@ public class ParceJson {
                 title = jsonObject.getString("title");
                 img = jsonObject.getString("img");//"http://cdn.seasonvar.ru/oblojka/498.jpg"; //
                 description = "lol"; //jsonObject.getString("description");
-                maxEp = 20; //jsonObject.getInt("maxEp");
+                maxEp = 10;//jsonObject.getInt("curEp");
                 animes.add(new Anime(id, title, img, description, maxEp));
             }
             return animes;
