@@ -42,6 +42,10 @@ public class AnimeManager {
         return animes.get(animeId - 1).getEpisode(episodeId);
     }
 
+    public static void clearEpisodes(int animeId) {
+        animes.get(animeId - 1).clearEpisode();
+    }
+
     public static int getEpisodesSize(int animeId) {
         return animes.get(animeId - 1).getEpisodes().size();
     }

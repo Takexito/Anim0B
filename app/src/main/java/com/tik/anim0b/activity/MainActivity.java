@@ -18,27 +18,6 @@ import com.tik.anim0b.parse.ParseSite;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private final static String JSON = "{\n" +
-//            "  \"animes\":[ \n" +
-//            "    {\n" +
-//            "      \"id\":1,\n" +
-//            "      \"title\":\"Fullmetal Alchemist: Brotherhood\",\n" +
-//            "      \"img\":\"http://images.sgcafe.net/2018/03/DZHL8JxVMAEA9AH.jpg\",\n" +
-//            "      \"description\":\"the best anime of the year!\",\n" +
-//            "      \"maxEp\":0,\n" +
-//            "      \"currEp\":0\n" +
-//            "    },\n" +
-//            "    {\n" +
-//            "      \"id\":2,\n" +
-//            "      \"title\":\"Kimi no Na wa.\",\n" +
-//            "      \"img\":\"http://images.sgcafe.net/2018/03/DZHL8JxVMAEA9AH.jpg\",\n" +
-//            "      \"description\":\"the best anime of the year!\",\n" +
-//            "      \"maxEp\":0,\n" +
-//            "      \"currEp\":0\n" +
-//            "    }\n" +
-//            "  ]\n" +
-//            "}";
-
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
 
@@ -60,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createRecyclerView() {
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
     }

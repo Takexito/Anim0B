@@ -60,6 +60,11 @@ public class Anime {
         curr_ep++;
     }
 
+    public void clearEpisode() {
+        episodes.clear();
+        curr_ep = 0;
+    }
+
     //public int getEpisodesSize() {
       //  return episodes.size();
     //}

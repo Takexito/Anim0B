@@ -59,7 +59,11 @@ public class FullNewsActivity extends AppCompatActivity {
         //new ParseVideoTask().execute();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Выберите серию");
-        builder.setAdapter(new ArrayAdapter(this, android.R.layout.select_dialog_item, spData()), new DialogInterface.OnClickListener() {
+        String[] data;
+        data = spData();
+        final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, data);
+
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 new StartVideoTask().execute(mAnimeId, i);
@@ -116,6 +120,7 @@ public class FullNewsActivity extends AppCompatActivity {
     private class StartVideoTask extends AsyncTask<Integer, Integer, Void> {
         @Override
         protected Void doInBackground(Integer... integers) {
+            AnimeManager.clearEpisodes(integers[0]);
             String json = ParseSite.getEpisodesJson(AnimeManager.getAnime(integers[0]), integers[1] + 1);//mSpinner.getSelectedItemPosition());
             AnimeManager.setEpisodes(json);
             ParseSite.clearJson();
@@ -124,9 +129,13 @@ public class FullNewsActivity extends AppCompatActivity {
 
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            AlertDialog.Builder builder = new AlertDialog.Builder(FullNewsActivity.this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(FullNewsActivity.this);
             builder.setTitle("Выберите вариант");
-            builder.setAdapter(new ArrayAdapter(FullNewsActivity.this, android.R.layout.select_dialog_item, getSpinnerData()), new DialogInterface.OnClickListener() {
+            String[] data;
+            data = getSpinnerData();
+            final ArrayAdapter adapter = new ArrayAdapter(FullNewsActivity.this, android.R.layout.select_dialog_item, data);
+
+            builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     new ParseVideoTask().execute(i);

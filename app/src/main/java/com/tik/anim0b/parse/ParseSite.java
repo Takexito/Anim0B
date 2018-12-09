@@ -156,22 +156,46 @@ public class ParseSite {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                allEpisodes = doc.select("div[data-kind=\"all\"]").last();
-                episodes = allEpisodes.select(".b-video_variant");
-                for (Element episode : episodes) {
-                    JSONObject jsonEpisode = new JSONObject();
-                    id = Integer.parseInt(episode.attr("data-video_id"));
-                    String hosting = episode.select(".video-hosting").text();
-                    String auth = episode.select(".video-author").text();
-                    voicer = hosting + " " + auth;
-                    String link = episode.select("a").attr("href");
-                    jsonEpisode.put("id", id);
-                    jsonEpisode.put("name", voicer);
-                    jsonEpisode.put("idd", idd);
-                    jsonEpisode.put("num", epNum);
-                    jsonEpisode.put("animeId", titleId);
-                    jsonEpisode.put("url", link);
-                    jsonAllEpisodes.put(jsonEpisode);
+                assert doc != null;
+                allEpisodes = doc.select("div[data-kind=\"fandub\"]").last();
+                if (allEpisodes != null) {
+                    episodes = allEpisodes.select(".b-video_variant");
+                    for (Element episode : episodes) {
+                        JSONObject jsonEpisode = new JSONObject();
+                        id = Integer.parseInt(episode.attr("data-video_id"));
+                        String hosting = episode.select(".video-hosting").text();
+                        String auth = episode.select(".video-author").text();
+                        voicer = hosting + " " + auth;
+                        String link = episode.select("a").attr("href");
+                        jsonEpisode.put("id", id);
+                        jsonEpisode.put("name", voicer);
+                        jsonEpisode.put("idd", idd);
+                        jsonEpisode.put("num", epNum);
+                        jsonEpisode.put("animeId", titleId);
+                        jsonEpisode.put("url", link);
+                        jsonAllEpisodes.put(jsonEpisode);
+                    }
+                }
+
+
+                allEpisodes = doc.select("div[data-kind=\"subtitles\"]").last();
+                if (allEpisodes != null) {
+                    episodes = allEpisodes.select(".b-video_variant");
+                    for (Element episode : episodes) {
+                        JSONObject jsonEpisode = new JSONObject();
+                        id = Integer.parseInt(episode.attr("data-video_id"));
+                        String hosting = episode.select(".video-hosting").text();
+                        String auth = episode.select(".video-author").text();
+                        voicer = hosting + " " + auth;
+                        String link = episode.select("a").attr("href");
+                        jsonEpisode.put("id", id);
+                        jsonEpisode.put("name", voicer);
+                        jsonEpisode.put("idd", idd);
+                        jsonEpisode.put("num", epNum);
+                        jsonEpisode.put("animeId", titleId);
+                        jsonEpisode.put("url", link);
+                        jsonAllEpisodes.put(jsonEpisode);
+                    }
                 }
 
             } catch (JSONException e) {
