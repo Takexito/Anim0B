@@ -2,7 +2,6 @@ package com.tik.anim0b.parse;
 
 
 import com.tik.anim0b.manager.AnimeManager;
-import com.tik.anim0b.pojo.Anime;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,26 +27,19 @@ public class ParseSite {
         jsonEpisodes = new JSONArray();
         jsonAllEpisodes = new JSONArray();
     }
+
     public static String getTitlesJson() {
-//        String string = "";
-//        try {
-//            string = Jsoup.connect("http://188.134.25.56:4567/anime").ignoreContentType(true).execute().body();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
         getTitle();
         return jsonAnimes.toString();
     }
 
-    public static String getEpisodesJson(Anime anime, int num) {
-//        String string = "";
-//        try {
-//            string = Jsoup.connect("http://188.134.25.56:4567/episodes/" + anime.getId()).ignoreContentType(true).execute().body();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        //getEpisode(AnimeManager.getAnimeIndex(anime), anime.getId(), HOST + anime.getId() + '-' + anime.getTitle());
-        getFunDub(AnimeManager.getAnimeIndex(anime), anime.getId(), num, HOST + anime.getId() + '-' + anime.getTitle());
+    public static String getEpisodesJson(Integer animeId, int num) {
+        int titleId = AnimeManager.getAnime(animeId).getTitleId();
+
+        getFunDub(animeId, titleId, num, HOST + titleId + '-'                                 //make link as https://play.shikimori.org/animes/
+                + AnimeManager.getAnime(animeId).getTitle());                               // 38528-quanzhi-fashi-3rd-season/video_online/2
+
         return jsonAllEpisodes.toString();
     }
 
@@ -80,13 +72,13 @@ public class ParseSite {
         }
     }
 
-    public static String getTitle() {
-        String result = "";
+    public static void getTitle() {
         Elements anime_titles_links;
         Elements imgsLink;
         List<String> links;
         List<String> imgs;
-        Document doc = null; //Здесь хранится будет разобранный html документ
+        Document doc = null;
+        //load 10 page of Anime Titles
         for (int i = 1; i <= 10; i++) {
             try {
                 Connection connection = Jsoup.connect("https://play.shikimori.org/page/" + i);
@@ -95,21 +87,21 @@ public class ParseSite {
                 e.printStackTrace();
             }
 
-            //Если всё считалось, что вытаскиваем из считанного html документа заголовок
             if (doc != null) {
-                //Находим заголовки тайтлов
-
                 anime_titles_links = doc.select(".cover");
                 imgsLink = anime_titles_links.select("img");
                 imgs = imgsLink.eachAttr("src");
                 links = anime_titles_links.eachAttr("data-href");
                 for (String link : links) {
-                    addAnimeToJson(link.substring(0, link.indexOf('-')).substring(link.lastIndexOf('/') + 1), link.substring(link.indexOf('-') + 1), imgs.get(links.indexOf(link)));
+                    //https://play.shikimori.org/animes/33064-uchuu-senkan-yamato-2202-ai-no-senshi-tachi/video_online
+                    addAnimeToJson(link.substring(0, link.indexOf('-')).substring(link.lastIndexOf('/') + 1), //get anime Id
+                            link.substring(link.indexOf('-') + 1), //get title
+                            imgs.get(links.indexOf(link)) //get img
+                    );
                 }
             }
         }
 
-        return result;
     }
 
     public static Integer getEpNum(String titleLink) {
@@ -129,80 +121,10 @@ public class ParseSite {
             if (episodesNum != null) {
                 result = episodesNum.select("a").attr("href");
                 num = Integer.parseInt(result.substring(result.lastIndexOf("/") + 1));
-            } else {
             }
-
-
         }
 
         return num;
-    }
-
-
-    public static String getFunDub(int idd, int titleId, int epNum, String titleLink) {
-        //for (int i = 0; i < jsonEpisodes.length(); i++) {
-            try {
-                //JSONObject json = (JSONObject) jsonEpisodes.get(i);
-                String url = titleLink + "/video_online/" + epNum;
-
-                int id;
-                String voicer;
-                Element allEpisodes;
-                Elements episodes;
-                Document doc = null; //Здесь хранится будет разобранный html документ
-                try {
-                    Connection connection = Jsoup.connect(url);
-                    doc = connection.get();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                assert doc != null;
-                allEpisodes = doc.select("div[data-kind=\"fandub\"]").last();
-                if (allEpisodes != null) {
-                    episodes = allEpisodes.select(".b-video_variant");
-                    for (Element episode : episodes) {
-                        JSONObject jsonEpisode = new JSONObject();
-                        id = Integer.parseInt(episode.attr("data-video_id"));
-                        String hosting = episode.select(".video-hosting").text();
-                        String auth = episode.select(".video-author").text();
-                        voicer = hosting + " " + auth;
-                        String link = episode.select("a").attr("href");
-                        jsonEpisode.put("id", id);
-                        jsonEpisode.put("name", voicer);
-                        jsonEpisode.put("idd", idd);
-                        jsonEpisode.put("num", epNum);
-                        jsonEpisode.put("animeId", titleId);
-                        jsonEpisode.put("url", link);
-                        jsonAllEpisodes.put(jsonEpisode);
-                    }
-                }
-
-
-                allEpisodes = doc.select("div[data-kind=\"subtitles\"]").last();
-                if (allEpisodes != null) {
-                    episodes = allEpisodes.select(".b-video_variant");
-                    for (Element episode : episodes) {
-                        JSONObject jsonEpisode = new JSONObject();
-                        id = Integer.parseInt(episode.attr("data-video_id"));
-                        String hosting = episode.select(".video-hosting").text();
-                        String auth = episode.select(".video-author").text();
-                        voicer = hosting + " " + auth;
-                        String link = episode.select("a").attr("href");
-                        jsonEpisode.put("id", id);
-                        jsonEpisode.put("name", voicer);
-                        jsonEpisode.put("idd", idd);
-                        jsonEpisode.put("num", epNum);
-                        jsonEpisode.put("animeId", titleId);
-                        jsonEpisode.put("url", link);
-                        jsonAllEpisodes.put(jsonEpisode);
-                    }
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        // }
-        return "";
     }
 
 
@@ -218,4 +140,52 @@ public class ParseSite {
         result = doc.select("div.player-area").select("iframe").attr("src");
         return result;
     }
+
+    public static String getFunDub(int animeId, int titleId, int epNum, String titleLink) {
+        try {
+            String url = titleLink + "/video_online/" + epNum;
+
+            int id;
+            String voicer;
+            Element allEpisodes;
+            Elements episodes;
+            Document doc = null; //Здесь хранится будет разобранный html документ
+            try {
+                Connection connection = Jsoup.connect(url);
+                doc = connection.get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            assert doc != null;
+            boolean flag = true;
+            for (int i = 0; i < 2; i++) {
+                if (flag) allEpisodes = doc.select("div[data-kind=\"fandub\"]").last();
+                else allEpisodes = doc.select("div[data-kind=\"subtitles\"]").last();
+                if (allEpisodes != null) {
+                    episodes = allEpisodes.select(".b-video_variant");
+                    for (Element episode : episodes) {
+                        JSONObject jsonEpisode = new JSONObject();
+                        id = Integer.parseInt(episode.attr("data-video_id"));
+                        String hosting = episode.select(".video-hosting").text();
+                        String auth = episode.select(".video-author").text();
+                        voicer = hosting + " " + auth;
+                        String link = episode.select("a").attr("href");
+                        jsonEpisode.put("id", id);
+                        jsonEpisode.put("name", voicer);
+                        jsonEpisode.put("animeId", animeId);
+                        jsonEpisode.put("num", epNum);
+                        jsonEpisode.put("titleId", titleId);
+                        jsonEpisode.put("url", link);
+                        jsonAllEpisodes.put(jsonEpisode);
+                    }
+                }
+                flag = !flag;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 }

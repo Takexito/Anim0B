@@ -28,7 +28,7 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 
         @Override
         public void onClick(View view) {
-            ActivityManager.openFullNews(view.getContext(), (long) getAdapterPosition());
+            ActivityManager.openFullNews(view.getContext(), (long) getAdapterPosition() - 1);
         }
     }
 
@@ -43,9 +43,8 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull AnimeAdapter.ViewHolder holder, final int position) {
-        AnimeManager.setAnimeImage(holder.mImageView, AnimeManager.getImgUrl(position + 1));
-        holder.mTextView.setText(AnimeManager.getTitle(position + 1));
-        //holder.mImageView.setImageResource(R.drawable.dw_a);
+        AnimeManager.setAnimeImage(holder.mImageView, AnimeManager.getImgUrl(position));
+        holder.mTextView.setText(AnimeManager.getTitle(position));
     }
 
     @Override
@@ -58,17 +57,4 @@ public class AnimeAdapter extends RecyclerView.Adapter<AnimeAdapter.ViewHolder> 
         return AnimeManager.getAnimesSize();
     }
 
-//        @Override
-//        public View getView(int i, View view, ViewGroup viewGroup) {
-//            if(view == null){
-//                view = getLayoutInflater().inflate(R.layout.list_item, viewGroup, false);
-//            }
-//            String url = AnimeManager.animes.get(i).img;
-//
-//            Glide
-//                    .with(view)
-//                    .load(url)
-//                    .into((ImageView) view);
-//            return view;
-//        }
 }

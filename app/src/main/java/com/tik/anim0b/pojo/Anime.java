@@ -3,7 +3,7 @@ package com.tik.anim0b.pojo;
 import java.util.ArrayList;
 
 public class Anime {
-    private int id;
+    private int titleId;
     private String title;
 
     private int max_ep;
@@ -14,8 +14,8 @@ public class Anime {
 
     private ArrayList<Episode> episodes;
 
-    public int getId() {
-        return id;
+    public int getTitleId() {
+        return titleId;
     }
 
     public String getTitle() {
@@ -26,6 +26,9 @@ public class Anime {
         return max_ep;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public void setMax_ep(int max_ep) {
         this.max_ep = max_ep;
@@ -69,11 +72,10 @@ public class Anime {
       //  return episodes.size();
     //}
 
-    public Anime(int id, String title, String imgUrl, String description, int max_ep) {
-        this.id = id;
+    public Anime(int id, String title, String imgUrl, int max_ep) {
+        this.titleId = id;
         this.title = title;
         this.imgUrl = imgUrl;
-        this.description = description;
         this.max_ep = max_ep;
         this.curr_ep = 0;
         this.episodes = new ArrayList<>();

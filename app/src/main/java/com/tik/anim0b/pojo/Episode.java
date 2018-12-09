@@ -3,7 +3,7 @@ package com.tik.anim0b.pojo;
 public class Episode {
     private int animeId;
     private int id;
-    private int episodeId;
+    private int titleId;
     private Anime anime;
     private String voicer;
     private String url;
@@ -49,17 +49,17 @@ public class Episode {
         this.num = num;
     }
 
-    public Episode(int id, int animeId, int num, String voicer, String url) {
+    public Episode(int id, int animeId, int titleId, int num, String voicer, String url) {
         this.id = id;
         this.animeId = animeId;
-        //      temp.addEpisode(this);
+        this.titleId = titleId;
         this.voicer = voicer;
         this.url = url;
         this.num = num;
     }
 
-    public int getIdd() {
-        return id;
+    public int getTitleId() {
+        return titleId;
     }
 
     public int getAnimeId() {

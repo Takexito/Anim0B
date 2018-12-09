@@ -19,43 +19,43 @@ public class AnimeManager {
     }
 
     public static Anime getAnime(int animeId){
-        return animes.get(animeId - 1);
+        return animes.get(animeId);
     }
 
     public static String getTitle(int animeId){
-        return animes.get(animeId - 1).getTitle();
+        return animes.get(animeId).getTitle();
     }
 
     public static int getCurrEp(int animeId){
-        return animes.get(animeId - 1).getCurr_ep();
+        return animes.get(animeId).getCurr_ep();
     }
 
     public static int getMaxEp(int animeId){
-        return animes.get(animeId - 1).getMax_ep();
+        return animes.get(animeId).getMax_ep();
     }
 
     public static String getImgUrl(int animeId){
-        return animes.get(animeId - 1).getImgUrl();
+        return animes.get(animeId).getImgUrl();
     }
 
     public static Episode getEpisode(int animeId, int episodeId){
-        return animes.get(animeId - 1).getEpisode(episodeId);
+        return animes.get(animeId).getEpisode(episodeId);
     }
 
     public static void clearEpisodes(int animeId) {
-        animes.get(animeId - 1).clearEpisode();
+        animes.get(animeId).clearEpisode();
     }
 
     public static int getEpisodesSize(int animeId) {
-        return animes.get(animeId - 1).getEpisodes().size();
+        return animes.get(animeId).getEpisodes().size();
     }
 
     public static ArrayList<Episode> getEpisodes(int animeId){
-        return animes.get(animeId - 1).getEpisodes();
+        return animes.get(animeId).getEpisodes();
     }
 
     public static String getDescription(int animeId){
-        return animes.get(animeId - 1).getDescription();
+        return animes.get(animeId).getDescription();
     }
 
     public static int getAnimesSize(){
@@ -63,19 +63,17 @@ public class AnimeManager {
     }
 
     public static void setAnime(String json){
-        clearAnime();
+        if (animes.size() != 0) clearAnime();
         ParceJson parceJson = new ParceJson(json);
-        parceJson.nextJsonObject();
         animes.addAll(parceJson.mapAnime());
     }
 
     public static void setEpisodes(String json){
         ParceJson parceJson = new ParceJson(json);
-        parceJson.nextJsonObject();
         List<Episode> episodes = parceJson.mapEpisode();
         for (int i = 0; i < episodes.size(); i++) {
             Episode episode = episodes.get(i);
-            Anime anime = AnimeManager.animes.get(episode.getIdd());
+            Anime anime = AnimeManager.animes.get(episode.getAnimeId());
             episode.setAnime(anime);
             anime.addEpisode(episode);
             anime.setMax_ep(i);

@@ -28,25 +28,22 @@ public class FullNewsActivity extends AppCompatActivity {
 
     private ImageView mTitleImage;
     private TextView mDescriptionText;
-    //private Button mStartButton;
     private ProgressBar mProgressBar;
     private ConstraintLayout mMainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_full_news);
+        setContentView(R.layout.activity_full_news); //ToDo: new design and animation
         getWidget();
         mAnimeId = (int) getIntent().getLongExtra(ActivityManager.NEWS_ID, 0);
-        mDescriptionText.setText(AnimeManager.getDescription(mAnimeId));
-        new NewTask().execute(mAnimeId);
-
+        mDescriptionText.setText(AnimeManager.getTitle(mAnimeId));
+        new EpisodesNumTask().execute(mAnimeId);
     }
 
     private void getWidget() {
         mTitleImage = findViewById(R.id.titleImage);
         mDescriptionText = findViewById(R.id.descripText);
-        //mStartButton = findViewById(R.id.startButton);
         mProgressBar = findViewById(R.id.progressBar);
         mMainLayout = findViewById(R.id.mainLot);
     }
@@ -56,36 +53,34 @@ public class FullNewsActivity extends AppCompatActivity {
     }
 
     public void onStartButtonClick(View view) {
-        //new ParseVideoTask().execute();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Выберите серию");
         String[] data;
         data = spData();
-        final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, data);
-
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, data);
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                new StartVideoTask().execute(mAnimeId, i);
+                new VideoTask().execute(mAnimeId, i + 1);
             }
         });
 
         builder.create().show();
-
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class NewTask extends AsyncTask<Integer, Void, Void> {
+    private class EpisodesNumTask extends AsyncTask<Integer, Void, Void> {
 
         @Override
         protected Void doInBackground(Integer... integers) {
-            AnimeManager.getAnime(integers[0]).setCurr_ep(ParseSite.getEpNum(
-                    "https://play.shikimori.org/animes/"
-                            + AnimeManager.getAnime(integers[0]).getId()
+            AnimeManager.getAnime(integers[0]).setCurr_ep(                                          //Set num of episode
+                    ParseSite.getEpNum("https://play.shikimori.org/animes/" +
+                            +AnimeManager.getAnime(integers[0]).getTitleId()
                             + '-'
                             + AnimeManager.getAnime(integers[0]).getTitle()
                     )
             );
+
             return null;
 
         }
@@ -117,11 +112,11 @@ public class FullNewsActivity extends AppCompatActivity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class StartVideoTask extends AsyncTask<Integer, Integer, Void> {
+    private class VideoTask extends AsyncTask<Integer, Integer, Void> {
         @Override
         protected Void doInBackground(Integer... integers) {
             AnimeManager.clearEpisodes(integers[0]);
-            String json = ParseSite.getEpisodesJson(AnimeManager.getAnime(integers[0]), integers[1] + 1);//mSpinner.getSelectedItemPosition());
+            String json = ParseSite.getEpisodesJson(integers[0], integers[1]);
             AnimeManager.setEpisodes(json);
             ParseSite.clearJson();
             return null;
@@ -133,7 +128,7 @@ public class FullNewsActivity extends AppCompatActivity {
             builder.setTitle("Выберите вариант");
             String[] data;
             data = getSpinnerData();
-            final ArrayAdapter adapter = new ArrayAdapter(FullNewsActivity.this, android.R.layout.select_dialog_item, data);
+            ArrayAdapter adapter = new ArrayAdapter(FullNewsActivity.this, android.R.layout.select_dialog_item, data);
 
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 @Override
@@ -174,5 +169,6 @@ public class FullNewsActivity extends AppCompatActivity {
     private static String getVideoLink() {
         return videoLink;
     }
+
 
 }
