@@ -1,7 +1,6 @@
 package com.tik.anim0b.activity;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -37,7 +36,7 @@ public class FullNewsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_full_news); //ToDo: new design and animation
         getWidget();
         mAnimeId = (int) getIntent().getLongExtra(ActivityManager.NEWS_ID, 0);
-        mDescriptionText.setText(AnimeManager.getTitle(mAnimeId));
+        //mDescriptionText.setText(AnimeManager.getTitle(mAnimeId));
         new EpisodesNumTask().execute(mAnimeId);
     }
 
@@ -58,12 +57,7 @@ public class FullNewsActivity extends AppCompatActivity {
         String[] data;
         data = spData();
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.select_dialog_item, data);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                new VideoTask().execute(mAnimeId, i + 1);
-            }
-        });
+        builder.setAdapter(adapter, (dialogInterface, i) -> new VideoTask().execute(mAnimeId, i + 1));
 
         builder.create().show();
     }
@@ -88,7 +82,7 @@ public class FullNewsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            AnimeManager.setAnimeImage(mTitleImage, AnimeManager.getImgUrl(mAnimeId));
+            AnimeManager.setAnimeImage(mTitleImage,"https://nyaa.shikimori.org/system/animes/original/35790.jpg?1534745692"); //AnimeManager.getImgUrl(mAnimeId));
             mMainLayout.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.INVISIBLE);
         }
@@ -130,12 +124,7 @@ public class FullNewsActivity extends AppCompatActivity {
             data = getSpinnerData();
             ArrayAdapter adapter = new ArrayAdapter(FullNewsActivity.this, android.R.layout.select_dialog_item, data);
 
-            builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    new ParseVideoTask().execute(i);
-                }
-            });
+            builder.setAdapter(adapter, (dialogInterface, i) -> new ParseVideoTask().execute(i));
             builder.create().show();
 
         }

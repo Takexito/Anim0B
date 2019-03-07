@@ -6,4 +6,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="anime_title">Anime Title</string>
 
+    <string name="title_activity_video">VideoActivity</string>
+
 </resources>

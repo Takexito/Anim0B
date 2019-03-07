@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.tik.anim0b.activity.FullNewsActivity;
-import com.tik.anim0b.activity.FullscreenActivity;
+import com.tik.anim0b.activity.FullScreenActivity;
 
 
 public class ActivityManager {
@@ -22,7 +22,7 @@ public class ActivityManager {
     }
 
     public static void openFullScreen(Context context, String url) {
-        Intent videoIntent = new Intent(context, FullscreenActivity.class);
+        Intent videoIntent = new Intent(context, FullScreenActivity.class);
         videoIntent.putExtra(VIDEO_URL, url);
         context.startActivity(videoIntent);
     }
