@@ -17,6 +17,7 @@ public class ActivityManager {
         Toast toast = Toast.makeText(context, "Start activity! " + id , Toast.LENGTH_LONG);
         toast.show();
         Intent intent = new Intent(context, FullNewsActivity.class);
+        //Intent intent = new Intent(context, ScrollingActivity.class);
         intent.putExtra(NEWS_ID, id);
         context.startActivity(intent);
     }

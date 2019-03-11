@@ -3,8 +3,6 @@ package com.tik.anim0b.activity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
@@ -12,6 +10,9 @@ import android.webkit.WebViewClient;
 
 import com.tik.anim0b.R;
 import com.tik.anim0b.manager.ActivityManager;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

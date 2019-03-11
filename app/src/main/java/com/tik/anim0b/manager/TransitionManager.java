@@ -6,8 +6,6 @@ import android.transition.TransitionSet;
 import android.view.ViewGroup;
 import android.view.animation.AnticipateOvershootInterpolator;
 
-import com.tik.anim0b.activity.MainActivity;
-
 public class TransitionManager {
 
     private static boolean isTransitGo;
@@ -30,14 +28,14 @@ public class TransitionManager {
             android.transition.TransitionManager.beginDelayedTransition(view);
             view.setVisibility(ViewGroup.INVISIBLE);
 
-            MainActivity.VisibileDetailed(); //TODO: change without static method on MainActivity 1
+            //MainActivity.VisibileDetailed(); //TODO: change without static method on MainActivity 1
             //view.setVisibility(ViewGroup.VISIBLE);
             //parent.setVisibility(View.INVISIBLE);
         }
         else {
             android.transition.TransitionManager.beginDelayedTransition(view);
             view.setVisibility(ViewGroup.VISIBLE);
-            MainActivity.invisibileDetailed(); //TODO: change without static method on MainActivity 2
+            //MainActivity.invisibileDetailed(); //TODO: change without static method on MainActivity 2
             //parent.setVisibility(View.VISIBLE);
         }
 

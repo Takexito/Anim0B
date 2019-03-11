@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Main App Theme with Action Bar -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorSecondary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
         <item name="android:textColorPrimary">@color/colorTextPrimary</item>
         <item name="android:textColorSecondary">@color/colorTextSecondary</item>
-        <item name="android:textColor">@color/colorTextSecondary</item>
-
-        <item name="buttonStyle">@style/AppTheme.Button</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <!--<item name="buttonStyle">@style/AppTheme.Button</item>-->
     </style>
 
-    <!-- Main App Theme without Action Bar -->
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="actionBarSize">0dp</item>
-    </style>
+    <!--&lt;!&ndash; Main App Theme without Action Bar &ndash;&gt;-->
+    <!--<style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">-->
+        <!--<item name="actionBarSize">0dp</item>-->
+    <!--</style>-->
 
-    <!-- Style for Button-->
-    <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
-        <item name="android:background">@color/colorSecondary</item>
-    </style>
+    <!--&lt;!&ndash; Style for Button&ndash;&gt;-->
+    <!--<style name="AppTheme.Button" parent="Widget.AppCompat.Button">-->
+        <!--<item name="android:background">@color/colorSecondary</item>-->
+    <!--</style>-->
 
     <!-- Style for FullScreen video content-->
     <style name="AppTheme.FullScreen">
@@ -33,6 +32,13 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!--<item name="colorControlNormal">?android:textColorPrimary</item>-->
+
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

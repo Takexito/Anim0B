@@ -3,21 +3,23 @@ package com.tik.anim0b.activity;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.tik.anim0b.R;
 import com.tik.anim0b.manager.ActivityManager;
 import com.tik.anim0b.manager.AnimeManager;
 import com.tik.anim0b.parse.ParseSite;
 
 import java.util.ArrayList;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class FullNewsActivity extends AppCompatActivity {
 
@@ -27,8 +29,8 @@ public class FullNewsActivity extends AppCompatActivity {
 
     private ImageView mTitleImage;
     private TextView mDescriptionText;
-    private ProgressBar mProgressBar;
-    private ConstraintLayout mMainLayout;
+    //private ProgressBar mProgressBar;
+    //private ConstraintLayout mMainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +39,39 @@ public class FullNewsActivity extends AppCompatActivity {
         getWidget();
         mAnimeId = (int) getIntent().getLongExtra(ActivityManager.NEWS_ID, 0);
         //mDescriptionText.setText(AnimeManager.getTitle(mAnimeId));
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_layout1);
+        //setSupportActionBar(toolbar);
+        CollapsingToolbarLayout toolbarLayout = findViewById(R.id.toolbar_layout1);
+        toolbarLayout.setTitleEnabled(false);
+        TextView textView = findViewById(R.id.textView3);
+        textView.setText(AnimeManager.getAnime(mAnimeId).getTitle());
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab1);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                onStartButtonClick();
+            }
+        });
+        AnimeManager.setAnimeImage(mTitleImage,//"https://nyaa.shikimori.org/system/animes/original/35790.jpg?1534745692");
+                 AnimeManager.getImgUrl(mAnimeId));
+
         new EpisodesNumTask().execute(mAnimeId);
     }
 
     private void getWidget() {
         mTitleImage = findViewById(R.id.titleImage);
-        mDescriptionText = findViewById(R.id.descripText);
-        mProgressBar = findViewById(R.id.progressBar);
-        mMainLayout = findViewById(R.id.mainLot);
+        //mDescriptionText = findViewById(R.id.descripText);
+        //mProgressBar = findViewById(R.id.progressBar);
+        //mMainLayout = findViewById(R.id.mainLot);
     }
 
     public void start() {
         ActivityManager.openFullScreen(this, getVideoLink());
     }
 
-    public void onStartButtonClick(View view) {
+    public void onStartButtonClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Выберите серию");
         String[] data;
@@ -82,9 +102,9 @@ public class FullNewsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            AnimeManager.setAnimeImage(mTitleImage,"https://nyaa.shikimori.org/system/animes/original/35790.jpg?1534745692"); //AnimeManager.getImgUrl(mAnimeId));
-            mMainLayout.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.INVISIBLE);
+            //AnimeManager.setAnimeImage(mTitleImage,"https://nyaa.shikimori.org/system/animes/original/35790.jpg?1534745692"); //AnimeManager.getImgUrl(mAnimeId));
+            //mMainLayout.setVisibility(View.VISIBLE);
+            //mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
 

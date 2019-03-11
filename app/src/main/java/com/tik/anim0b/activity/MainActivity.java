@@ -3,10 +3,6 @@ package com.tik.anim0b.activity;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,15 +11,16 @@ import android.widget.ProgressBar;
 import com.tik.anim0b.R;
 import com.tik.anim0b.adapter.AnimeAdapter;
 import com.tik.anim0b.manager.AnimeManager;
-import com.tik.anim0b.manager.TransitionManager;
 import com.tik.anim0b.parse.ParseSite;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
-    private static ConstraintLayout mDeatailed;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +39,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createRecyclerView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);//GridLayoutManager(this, 2);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
-    }
-
-    public void onStartButtonClick(View view){
-        TransitionManager.onClickTransition(mRecyclerView, null);
     }
 
     @Override
@@ -92,13 +86,4 @@ public class MainActivity extends AppCompatActivity {
             mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
-
-    public static void VisibileDetailed(){
-        mDeatailed.setVisibility(View.VISIBLE);
-    }
-
-    public static void invisibileDetailed(){
-        mDeatailed.setVisibility(View.INVISIBLE);
-    }
-
 }
